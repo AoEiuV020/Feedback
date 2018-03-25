@@ -3,6 +3,7 @@ package cc.aoeiuv020.feedback.server
 import org.jsoup.Jsoup
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.TimeUnit
 
 /**
  *
@@ -42,7 +43,7 @@ class NameProvider : Runnable {
 
 
     fun next(): String {
-        val name = queue.poll()
+        val name = queue.poll(2, TimeUnit.SECONDS)
         synchronized(requestThread) {
             requestThread.notify()
         }
