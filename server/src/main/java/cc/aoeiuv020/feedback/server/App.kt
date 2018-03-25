@@ -49,7 +49,7 @@ object App {
         val mainThread = Thread.currentThread() as Object
         synchronized(mainThread) {
             try {
-                mainThread.wait()
+                mainThread.wait(TimeUnit.SECONDS.toMillis(2))
             } catch (_: InterruptedException) {
             }
         }
