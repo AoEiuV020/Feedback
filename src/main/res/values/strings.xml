@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Feedback</string>
+    <string name="connect">Connect</string>
+    <string name="send">Send</string>
+    <string name="message">Message</string>
+    <string name="ws_url_default">ws://feedback.aoeiuv020.cc/ws</string>
+    <string name="close">Close</string>
+    <string name="connecting">Connecting</string>
+</resources>
