@@ -3,6 +3,9 @@ package cc.aoeiuv020.feedback
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.SwitchCompat
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.feedback_activity_client.*
 import org.java_websocket.client.WebSocketClient
@@ -74,9 +77,7 @@ class FeedbackActivity : AppCompatActivity(), AnkoLogger {
             isClickable = true
             text = getString(R.string.connect)
             setOnClickListener {
-                connecting(editTextUrl.text.toString().takeIf(String::isNotEmpty)
-                        ?: getString(R.string.ws_url_default)
-                )
+                connecting(getUrl())
             }
         }
         buttonSend.apply {
@@ -84,6 +85,9 @@ class FeedbackActivity : AppCompatActivity(), AnkoLogger {
             setColorFilter(color(R.color.sendDisable))
         }
     }
+
+    private fun getUrl() = (editTextUrl.text.toString().takeIf(String::isNotEmpty)
+            ?: getString(R.string.ws_url_default))
 
     fun connecting(str: String) {
         debug { "connecting $str" }
@@ -155,6 +159,29 @@ class FeedbackActivity : AppCompatActivity(), AnkoLogger {
         closed()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.feedback_menu, menu)
+        val switch = menu.findItem(R.id.listen).actionView as SwitchCompat
+        switch.isChecked = ListenFeedbackService.isRunning
+        switch.apply {
+            setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    ListenFeedbackService.start(this@FeedbackActivity, getUrl())
+                } else {
+                    ListenFeedbackService.stop(this@FeedbackActivity)
+                }
+            }
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.listen -> true
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     inner class Client(uri: URI) : WebSocketClient(uri) {
         override fun onOpen(handshakedata: ServerHandshake?) {
             runOnUiThread {
@@ -169,7 +196,6 @@ class FeedbackActivity : AppCompatActivity(), AnkoLogger {
         }
 
         override fun onClose(code: Int, reason: String?, remote: Boolean) {
-            close(1000, "closing")
             runOnUiThread {
                 closed()
             }

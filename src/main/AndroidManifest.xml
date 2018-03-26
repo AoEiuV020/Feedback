@@ -3,10 +3,16 @@
     package="cc.aoeiuv020.feedback">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application>
         <activity
             android:name=".FeedbackActivity"
             android:launchMode="singleTask" />
+
+        <service
+            android:name=".ListenFeedbackService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

@@ -6,4 +6,5 @@
     <string name="ws_url_default">ws://feedback.aoeiuv020.cc/ws</string>
     <string name="close">Close</string>
     <string name="connecting">Connecting</string>
+    <string name="listen">监听</string>
 </resources>
